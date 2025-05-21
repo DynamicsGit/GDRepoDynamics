@@ -1,0 +1,316 @@
+Functional Design Document (FDD)
+CRM Journey Planning – MVP
+
+1. Introduction
+This Functional Design Document (FDD) defines the end-to-end business and system requirements for the MVP implementation of Journey Planning within the CRM platform for the C&C sales team. The goal is to enable effective, optimised, and measurable sales call planning and execution for Account Sales Managers (ASMs) and related stakeholders, driving efficiency, accountability, and superior customer engagement.
+
+2. Scope
+In Scope:
+* Automated and manual sales call scheduling based on customer tiering and business rules.
+* Journey planning optimised for call quantity, geography, transport modes, and calendar constraints.
+* Integration with Dynamics CRM, Outlook, and mobile navigation apps.
+* Mobile and offline access for field users.
+* Management reporting and analytics for planned and actual activities.
+* Edge case handling, rescheduling, and exception management.
+Out of Scope:
+* Full customer onboarding process.
+* Advanced AI-based journey optimisation beyond route calculation.
+* Deep integration with third-party analytics or BI tools (unless specified).
+
+3. Actors/Roles
+Role/ActorDescriptionAccount Sales Manager (ASM)Primary user responsible for managing customer/prospect calls and journeysRegional Sales Manager (RSM)Line manager, oversees ASMs, monitors performance and plansRegional Sales Director (RSD)Senior management, reviews team performance and journey plansSales Director (SD)Overall sales strategy and performance accountabilitySystem AdminConfigures CRM, manages user access and tiering logicCustomerReceives calls/visits, may confirm/reschedule appointmentsProspectTarget for sales calls, not yet an existing customer
+4. Business Processes & Touchpoints
+* Customer Tiering Assignment and Maintenance
+* Automated Sales Call Scheduling (System-driven)
+* Manual Sales Call Scheduling and Editing
+* Journey Route Optimisation
+* Calendar and Availability Synchronisation
+* Daily and Weekly Journey Planning
+* Rescheduling and Exception Handling
+* Mobile and Offline Access
+* Management and Performance Reporting
+* Integration with CRM, Outlook, Maps
+* User Notifications and Confirmations
+
+5. Functional Requirements
+5.1 Sales Call Creation
+5.1.1 System-Created Calls Based on Tiering
+Business Rationale:
+Ensures all customers are contacted at the right frequency according to their value, maximising sales opportunity.
+Preconditions/Triggers:
+* Customers must have up-to-date tiering (based on sales, volume, margin, potential).
+* Last meeting date is recorded.
+User Interactions:
+* System assigns tier to each customer.
+* System auto-generates sales call schedule (e.g., Tier 1: bi-weekly, Tier 2: monthly, etc.).
+* ASM is notified of planned calls in their calendar.
+System Behavior:
+* Generates call plans per ASM, ensuring compliance with tiering logic.
+* Plans are visible in ASM’s calendar.
+Edge Cases/Validation:
+* Customers missing required tiering data flagged for review.
+* If last meeting date is missing, default to earliest possible date.
+
+5.1.2 Manually Created/Amended Calls
+Business Rationale:
+Allows flexibility for ASMs to add, edit, or reschedule calls (esp. prospects or special cases).
+Preconditions:
+* User must have permissions.
+* Customer/prospect exists in CRM.
+User Interactions:
+* ASM adds or amends calls via UI.
+* Can override system schedule with justification.
+System Behavior:
+* Validates for call conflicts, minimum/maximum calls per day.
+* Updates plan in CRM and Outlook.
+Edge Cases:
+* Exceeding daily call limits prompts warning.
+* Attempt to schedule outside working hours triggers validation.
+
+5.1.3 Daily Call Volume Enforcement
+Business Rationale:
+Maintain optimal workload and coverage.
+Preconditions:
+* ASM’s daily schedule exists.
+System Behavior:
+* Enforces minimum 7, maximum 9 calls per day.
+* Warns on manual scheduling if limits breached.
+
+5.1.4 Calendar Constraints
+Business Rationale:
+Prevents scheduling during holidays/leave.
+System Behavior:
+* Syncs with Outlook; blocks calls on holidays/leave.
+* Checks for account/customer opening hours.
+
+5.1.5 Journey Start/End Locations
+Business Rationale:
+Efficient route planning, minimal travel time.
+System Behavior:
+* ASM can define home/start/end locations.
+* Used as anchor points for journey routes.
+
+5.1.6 Contact Type Inclusion
+Business Rationale:
+Ensures a blend of prospects and existing accounts.
+System Behavior:
+* At least 2 prospect calls per day included in plan.
+
+5.1.7 Route Optimisation
+Business Rationale:
+Minimise travel time, enable circular journeys.
+System Behavior:
+* Route planning algorithm optimises order and path.
+* Supports circular routes (start/end at home).
+
+5.1.8 Transport Mode Considerations
+Business Rationale:
+Realistic journey planning.
+System Behavior:
+* Region-specific options: Car, walking, public transport.
+* ASM can set preferred mode.
+
+5.1.9 Visual Map View
+Business Rationale:
+Transparency and ease for ASMs.
+System Behavior:
+* Interactive map displays daily/weekly routes.
+
+5.1.10 4-Week Rolling Plan
+Business Rationale:
+Enable proactive planning.
+System Behavior:
+* Plans generated for upcoming 4 weeks, updated monthly.
+
+5.1.11 Plan Refresh
+Business Rationale:
+Reflect changes and exceptions.
+System Behavior:
+* Daily refresh of plan to incorporate changes.
+
+5.1.12 Appointment Confirmation and Walk-ins
+Business Rationale:
+Manage confirmed and ad-hoc appointments.
+System Behavior:
+* Sends confirmations to customers.
+* If rescheduled, triggers notification.
+* Suggests walk-ins if appointment cancelled.
+
+5.1.13 Variable Call Duration
+Business Rationale:
+Flexible scheduling for different call types.
+System Behavior:
+* Duration set per call (60–90 min.); type-driven.
+
+5.1.14 Travel Directions
+Business Rationale:
+Ease of navigation.
+System Behavior:
+* Provides directions via integration (Google Maps, Waze, etc.).
+
+5.2 Plan Creation & View
+5.2.1 Weekly & Rolling View
+Business Rationale:
+Short- and medium-term planning.
+System Behavior:
+* 5-day calendar view for ASM.
+* Only 1 month of data visible.
+
+5.2.2 Plan Visibility
+Business Rationale:
+Managerial oversight.
+System Behavior:
+* Plans visible to ASM, RSM, RSD, SD.
+* Filtering by ASM.
+
+5.2.3 Prospect Inclusion
+Business Rationale:
+Drive pipeline growth.
+System Behavior:
+* Ensures blend of prospects and accounts in plans.
+
+5.2.4 Automated Route Planning
+Business Rationale:
+Efficiency.
+System Behavior:
+* System calculates optimal route, order, and timing.
+
+5.2.5 Call Objectives
+Business Rationale:
+Outcome-focused engagement.
+System Behavior:
+* Objective field per call, visible in plan.
+
+5.3 Rescheduling
+5.3.1 Reschedule Calls
+Business Rationale:
+Flexibility for changes.
+System Behavior:
+* ASM can reschedule; must select reason code.
+
+5.3.2 Suggest Additional Walk-ins
+Business Rationale:
+Maximise productivity if cancellations occur.
+System Behavior:
+* If call cancelled, system suggests nearby prospects.
+
+5.4 Next Call Date Setting
+5.4.1 System-Driven Next Call
+Business Rationale:
+Maintains call cadence.
+System Behavior:
+* On completion, next call auto-scheduled per tiering.
+
+5.4.2 Manual Next Call
+Business Rationale:
+Allows ASM to adjust as needed.
+System Behavior:
+* ASM can manually edit next call date; system validates.
+
+5.5 Reporting
+5.5.1 Actual Calls
+Business Rationale:
+Performance tracking.
+System Behavior:
+* Reports on actual calls per ASM/team.
+
+5.5.2 Planned Calls
+Business Rationale:
+Proactive management.
+System Behavior:
+* Reports on planned calls per ASM/team.
+
+5.5.3 Reschedule Reasons
+Business Rationale:
+Identify trends/issues.
+System Behavior:
+* Reports on number and reasons for reschedules.
+
+5.6 Integration
+5.6.1 CRM Integration
+Business Rationale:
+Single source of truth.
+System Behavior:
+* All data stored in Dynamics CRM.
+
+5.6.2 Outlook Integration
+Business Rationale:
+Calendar sync.
+System Behavior:
+* Syncs calls/journeys with Outlook calendar.
+
+5.6.3 Navigation App Integration
+Business Rationale:
+Ease of use.
+System Behavior:
+* Click to open directions in preferred navigation app.
+
+5.7 Mobile & Offline
+5.7.1 Mobile Access
+Business Rationale:
+Field usability.
+System Behavior:
+* Responsive design or mobile app.
+
+5.7.2 Offline Access
+Business Rationale:
+Continuity in remote areas.
+System Behavior:
+* Plans and key data cached locally.
+* Syncs when online.
+
+6. Non-Functional Requirements
+* Performance: Journey plan generation within 10 seconds.
+* Usability: Intuitive UI for field users; minimal clicks for key actions.
+* Reliability: 99.5% uptime for CRM and planning engine.
+* Scalability: Support for 2x current user base.
+* Security: Role-based access, data encryption in transit and at rest.
+* Auditability: All changes to calls and schedules logged.
+
+7. User Stories Summary Table
+User Story IDSummary/TitlePrimary ActorGoalAcceptance CriteriaUS-01Auto-generate calls based on tieringASMReceive regular, tiered customer callsCalls auto-scheduled per customer tierUS-02Manually schedule/amend callsASMAdd or edit calls flexiblyCan add/edit calls; validation for limitsUS-03Optimise and visualise journeyASMEfficient, mapped daily/weekly routesMap view available; route optimisedUS-04Blend of prospect and account callsASMMeet daily mix requirementsAt least two prospect calls per day in planUS-054-week and weekly plan visibilityASM/RSMPlan ahead, review team plans5-day and rolling 4-week view; filter by ASMUS-06Reschedule call with reasonASMAdjust for changesCan reschedule with mandatory reason codeUS-07Suggest walk-ins for cancellationsASMFill gaps in scheduleSystem suggests nearby prospects for cancelled slotUS-08Sync plan with Outlook and navigation appsASMUse familiar and efficient toolsPlan visible in Outlook; directions open in chosen appUS-09Offline access to journey plansASMWork in areas without connectivityCan view/edit plans offline; syncs when back onlineUS-10Management reporting on calls and reschedulesRSM/RSD/SDTrack performance, identify issuesReports show planned/actual calls, reschedule reasonsUS-11Secure, auditable access and changesAllData privacy and complianceRole-based access, audit logsUS-12Calendar and holiday integrationASMPrevent scheduling conflictsNo calls on holidays/leaves; checks customer opening hours
+8. Design Inventory Table
+FeatureUser StoryComponents to Generate/ExtendType of ComponentDescriptionCustomer Tiering & SchedulingUS-01Customer Entity, Tiering Workflow, Schedule GeneratorEntity, Workflow, PluginAssigns tiers, triggers call schedulingManual SchedulingUS-02Call Entity, Call Form, Validation PluginEntity, Form, PluginEnables manual add/edit, enforces rulesJourney Optimisation & MapUS-03Journey Entity, Route Planner, Map View, Mobile ViewEntity, Plugin, View, MobileStores journey data, calculates routes, displays mapProspect/Account BlendUS-04Call Scheduler ExtensionPlugin/WorkflowEnsures minimum prospect calls per dayPlan Views & FilteringUS-05Calendar View, Filters, Security RolesView, SecurityWeekly and monthly views, manager filtersReschedulingUS-06Reschedule Workflow, Reason Code EntityWorkflow, EntityHandles rescheduling, captures reasonsWalk-in SuggestionsUS-07Suggestion Engine, Nearby Prospect LookupPlugin, WorkflowSuggests walk-ins on cancellationsOutlook/Navigation IntegrationUS-08Outlook Connector, Navigation App IntegrationIntegrationCalendar sync, open in navigation appsOffline/Mobile AccessUS-09Mobile App/Responsive View, Local Data CacheMobile, CacheUsable offline, syncs changesReportingUS-10Reporting Dashboard, Call/Reschedule ReportsDashboard, ReportManagement views for actual/planned calls, reasonsSecurity & AuditUS-11Security Roles, Audit Trail, Field-level SecuritySecurity, AuditRestricts access, logs changesCalendar/Holiday IntegrationUS-12Calendar Connector, Validation PluginIntegration, PluginBlocks calls on holidays/leave, validates customer hours
+9. Integration Points
+* Dynamics CRM: Store all journey, call, customer, and tier data.
+* Outlook: Sync calendar events for calls/journeys.
+* Navigation Apps (Google Maps, Waze, Bing Maps): Open directions from CRM/mobile.
+* Mobile Platform: Responsive or native app for field usage.
+* External Data (e.g., Holidays, Opening Hours): Import for scheduling validation.
+
+10. Reporting
+* Actual vs Planned Calls per ASM/Team (Period: week, month)
+* Reason Codes Analysis for Reschedules
+* Prospect vs Account Calls Ratio
+* Call Duration and Type Analysis
+* Journey Efficiency (e.g., total travel time vs call time)
+
+11. Security
+* Role-Based Access: Differentiate views/actions for ASM, RSM, RSD, SD, Admin.
+* Field-Level Security: Sensitive customer data protected.
+* Audit Trail: All changes to calls, journeys, and tiering logged.
+* Data Encryption: In transit and at rest.
+* Authentication: Single sign-on with multi-factor support (Inferred Requirement).
+
+12. Glossary
+* ASM: Account Sales Manager
+* RSM: Regional Sales Manager
+* RSD: Regional Sales Director
+* SD: Sales Director
+* JP: Journey Plan
+* Walk-in: Unscheduled or ad-hoc customer/prospect visit
+
+13. Assumptions & Inferred Requirements
+* Data Completeness: All customers and prospects have sufficient profile data for scheduling.
+* User Training: Users will receive initial and ongoing training for new features.
+* Device Compatibility: Mobile solution will be tested on supported devices/platforms.
+* Notifications: ASMs receive timely notifications for schedule changes (implied).
+* Data Privacy: All integrations comply with internal/external data protection standards.
+* Disaster Recovery: Regular backups and recovery procedures in place.
+* Localization: System supports region-specific holidays and transport options.
+
+14. Traceability Matrix
+All requirements are mapped from the original requirements document (CRM1–CRM8) to detailed user stories and solution components in the tables above.
+
+End of Document
+
