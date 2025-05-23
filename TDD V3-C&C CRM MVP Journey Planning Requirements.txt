@@ -1,0 +1,65 @@
+Technical Design Document (TDD)
+C&C CRM Journey Planning MVP
+1. Comprehensive Coverage of FDD
+Functional AreaTechnical SolutionVisual/Tabular InterpretationAutomated & Manual Sales Call Scheduling* Custom Entities: Journey Plan, Journey Call, Tiering
+* Workflows/Plugins for auto-scheduling calls
+* Business Rules/JS for daily volume enforcementJourney Plan
+Journey Call
+See attribute tables in Section 3Journey Planning & Optimization* Route optimization plugin/integration
+* Fields: Start/End Location, Transport Mode
+* Map integration (PCF control)Journey Plan fields: Mode, Start/End, Map RouteCalendar & Outlook SynchronizationOOB Exchange Sync, plugin for calendar block on holidays/leaveIntegration Table (Section 6)Mobile & Offline AccessField Service Mobile app or D365 mobile with offline profilesNative mobile experience, offline sync enabledManagement ReportingCustom dashboards, Power BI reports, data model for journey/call/planReporting entity modelException Handling & Walk-insMandatory reason codes, workflow/plugin to suggest walk-insReason code tracking, walk-in suggestion logic2. Customization Analysis
+Entities List
+* Journey Plan
+* Journey Call
+* Tiering
+* Reason Code
+* Call Objective
+* Account (OOB)
+* Prospect (Contact/Lead, OOB extended)
+* User (OOB, ASM)
+Attributes by Entity
+Journey Plan
+FieldTypeDescriptionPlan Start DateDateStart of journeyPlan End DateDateEnd of journeyStatusOption SetDraft, Active, CompletedTransport ModeOption SetCar, Public, WalkingStart/End LocationString/GeoRoute anchorsMap Route DataText/JSONFor map/PCFJourney Call
+FieldTypeDescriptionScheduled DateTimeDateTimeCall date/timeDurationInteger60–90 minCall TypeOption SetExisting, Prospect, etc.ObjectiveLookupCall ObjectiveStatusOption SetPlanned, Completed, RescheduledReschedule ReasonLookupReason CodeConfirmation StatusOption SetConfirmed, Pending, Walk-inTravel Directions URLURLMap linkTiering
+FieldTypeDescriptionTierOption Set1, 2, 3, 4Sales/Volume/Margin/PotentialCurrency/DecimalFor scoringLast Meeting DateDateLast visitReason Code / Call Objective
+FieldTypeDescriptionNameStringReason/Objective labelDescriptionStringDetailsRole and Privileges Matrix
+RoleEntityPrivilegesASMJourney Plan, Journey CallCreate, Read, Update (own), Delete (own)RSMJourney Plan, Journey Call, ReportsRead, Approve, Update (supervise)RSD/SDAll (Mgmt)Read, Report, ApproveAdminAllFull CRUD + CustomizationCustomizations and Steps
+CustomizationDescriptionConfig Steps / PseudocodeAuto-generate calls (by tier)Plugin/workflow to create calls based on tier frequencyOn tiering create/update:
+- Determine call frequency
+- For each, create Journey Call
+- Notify ASMManual scheduling validationBusiness rule/JS for min 7, max 9 calls per day, prospect mix, hoursOn Call form save:
+- Count ASM's calls for day
+- If <7 or >9, block save
+- Ensure 2 prospects per day
+- Validate working hours, holidaysReschedule reason enforcementWorkflow to require reason on reschedule, suggest walk-insOn status change to Rescheduled:
+- Require Reason Code
+- Suggest walk-ins if slot freedRoute optimisationPlugin/Integration with mapping APIOn plan refresh:
+- Fetch calls, ASM location
+- Call mapping API
+- Update route/map dataOutlook syncOOB + Plugin for holidays/working hoursConfigure Exchange sync; add plugin for additional validation.3. Integration Strategy
+Integration AreaSystems InvolvedData Flow (Mapping)MethodSecurity/Error HandlingOutlook Calendar SyncD365 CE, Exchange/OutlookJourney Call ? Appointment (Subject, Date, Duration, Location...)OOB + PluginOAuth, RBAC, logging, retriesNavigation App LinksCRM, Google Maps/WazeDirections URL in callURL/Deep LinkHTTPS, validation fallbackExternal Data ImportCRM, CSV/APIHolidays/opening hours ? CRM lookupDataflow/APIIP allow, field validationReporting/BICRM, Power BIJourney/Call data ? BI datasetPower BI DataflowData policy, RLS4. Data Migration
+* Source data systems: Legacy CRM, spreadsheets, external APIs
+* Data cleansing: Remove duplicates, standardize, validate required fields
+* Migration approach: Data Import Wizard, Power Query, KingswaySoft/SSIS
+* Validation: Record and field checks, exception reporting, reconciliation with source
+5. PCF Component Evaluation
+Use CasePurpose & FunctionalityInputsOutputsReferencesInteractive Journey MapVisualize route, drag-drop reorder, show calls on mapJourney Plan ID, Call locationsUpdated order, route mapPCF DocsSchedule Calendar ViewCustom calendar UI for call planningASM ID, Date rangeCalls scheduled/editedSample Calendar PCFOn Journey Plan load:
+- Render route and call pins on map
+- Allow drag to reorder pins
+- On reorder, update call order and recalculate route
+- On pin click, show call popup
+6. Security Considerations
+* Customizations: Field-level security for sensitive attributes, audit log enabled
+* Integrations: OAuth2, role-based access, error logs, retry logic
+* Data Migration: Encrypt files, limited privilege migration accounts, log all events
+* PCF: Validate inputs, never expose sensitive data in client code, enforce RBAC
+* General: MFA, RBAC, periodic security review
+7. Pseudocode Examples
+Integration to Outlook (Plugin):
+On Journey Call create/update:
+Map fields to Outlook
+Create/update appointment
+On error, retry or flag
+8. Conclusion
+This TDD provides a comprehensive, actionable blueprint for delivering the C&C CRM Journey Planning MVP in Dynamics 365 CE, leveraging the best-fit OOB modules and targeted customizations, integrations, and security for business success.
+
