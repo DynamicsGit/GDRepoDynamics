@@ -1,0 +1,86 @@
+Functional Design Document (FDD)
+C&C CRM MVP Journey Planning
+
+1. Introduction
+This Functional Design Document (FDD) details the requirements and solution approach for C&C’s CRM MVP Journey Planning. The objective is to enable efficient, automated, and optimized sales journey planning for Account Sales Managers (ASMs) and their management. The solution ensures calls are scheduled and executed in line with business rules, customer tiering, and real-world constraints, leveraging Dynamics 365 CE and associated technologies.
+
+2. Scope
+In Scope
+* Automated and manual sales call scheduling (customer tiering, business rules)
+* Rolling journey planning with optimization (visit count, geography, transport, calendar)
+* Integration with Dynamics CRM, Outlook, and mobile navigation apps
+* Mobile and offline access for ASMs
+* Management reporting and analytics (planned and actual activities)
+* Exception handling (rescheduling, walk-ins, productivity optimization)
+Out of Scope
+* Full customer onboarding process
+* Advanced AI-based journey optimization beyond route calculation
+* Deep integration with third-party analytics/BI tools (except Power BI)
+* Non-sales team journey planning
+
+3. Actors and Roles
+ActorDescriptionAccount Sales Manager (ASM)Main user, manages customer/prospect calls and journeysRegional Sales Manager (RSM)Oversees ASMs, reviews/approves journey plans, monitors performanceRegional Sales Director (RSD)Oversees RSMs, monitors progress and complianceSales Director (SD)Senior management, responsible for policy and oversightCRM AdministratorManages system configuration, security, data quality, integrationsCustomers/ProspectsRecipients of sales calls and visits, not system users
+4. Functional Requirements
+#Functional RequirementBusiness RationalePreconditions/TriggersStep-by-Step User InteractionsExpected System BehaviorEdge Cases & Validation RulesFR001System-created calls based on TieringEnsure customer engagement per business valueCustomer tiering, last meeting dateASM notified of auto-scheduled callsAuto-schedules calls per tier; flags missing dataDefaults for missing dataFR002Manually create/amend callsASM flexibility; ad-hoc/prospect callsUser has permission; record existsASM adds/edits in UI; justification if overrideValidates conflicts, call volume, working hours; updates OutlookWarns/blocks on violationFR003Daily call volume enforcement (min 7, max 9)Ensure productivity and balancePlan existsASM plans dayEnforces limits; blocks/warns if violatedWarns/blocks on violationFR004Calendar constraints (holidays, leave, openings)Avoid unproductive schedulingOutlook access, hours dataASM reviews/edits planBlocks scheduling on holidays/leave/closed accounts; notifies ASMNotifies on conflictFR005Start/end location for journeysOptimize routes, minimize travelASM sets anchor pointsASM defines home/start/end in profileUses in route optimization/circular journeyWarns if not setFR006Include contact type (accounts & prospects, at least 2 prospects per day)Ensure pipeline growthProspect records exist in CRMASM plans journeyEnforces inclusion; highlights shortfallWarns if not metFR007Route optimization & multi-mode transportMaximize time with customers, realistic journeyASM sets mode, anchorsASM reviews/adjusts journeyCalculates optimal/circular route; supports car/walk/publicFallback if API failsFR008Visual map view of journey (day/week)Enhance transparency, user understandingPlan existsASM views mapInteractive map with route, pins, orderWarns if map unavailableFR009Rolling plan (4-week, monthly refresh, 5-day ASM calendar view, Outlook sync)Enable proactive, visible planningPlan/refresh event, Outlook accessASM views/prints plan4-week rolling plan, refreshed monthly; 5-day view; Outlook syncNotifies on sync failureFR010Daily plan refresh to accommodate changesKeep plan currentDaily triggerASM/manager views planPlan refreshed daily for reschedules/cancellationsWarns if refresh failsFR011Confirmed and walk-in appointment handlingMaximize productivity, customer commsAppointment confirmed/cancelledASM confirms/reschedules; system suggests walk-insNotification to customer; fill with nearby walk-ins if cancelledWarns if none availableFR012Variable call duration (60–90 min, by type)Accurate schedulingCall type/objective presentASM sets in UIDuration set by type; defaults by categoryWarns if out of rangeFR013Travel directions & mobile navigation integrationASM field efficiencyMobile access, GPS permissionsASM clicks for directionsOpens Google Maps/Waze with locationWarns if integration failsFR014Weekly & multi-week journey plan viewsShort/medium-term planning, oversightPlan existsASM views calendar; manager reviewsWeekly and 4-week views; filter by ASMWarns if data range exceededFR015Plan visibility & filtering (by ASM, all roles)Oversight, coaching, managementSecurity role assignedManager/SD views/filters plansRBAC enforced, filtering by ASM/regionWarns if not authorizedFR016View/set call objectivesFocus on outcomesObjective options setASM selects objective in UIObjectives visible/editable in planWarns if missingFR017Reschedule calls & enforce reason codesTrend analysis, complianceCall rescheduledASM reschedules; selects reason codeReason code mandatory; audit trail/logBlocks if not setFR018Set next call date (auto/manual)Maintain cadence, flexibilityTiering/call completion/manualASM/system sets/overrides next callSystem auto-sets by tier; ASM can override with validationWarns if cadence violatedFR019Management reporting (actual/planned calls, reschedule reasons, call mix, durations, journey efficiency, overdue calls)Data-driven management and improvementData availableManager/SD uses dashboardsReports on all key KPIs, drilldowns, complianceWarns if data incompleteFR020Mobile and offline capabilityField productivity, continuitySupported devices, offline profileASM uses mobile appOffline cache, sync when onlineWarns if sync fails
+5. User Story Summary Table
+User Story IDSummary/TitlePrimary ActorGoalAcceptance CriteriaUS-01Auto-generate calls based on tieringASMRegular, tiered customer callsCalls auto-scheduled, visible in plan/calendar, exceptions flaggedUS-02Manually create/amend callsASMFlexibly add/change callsCan add/edit/reschedule; system validates; warnings for conflictsUS-03Daily call volume enforcementASM, SystemSufficient/not excessive callsMin 7, max 9 per day; warnings/blocks as neededUS-04Calendar constraintsASM, SystemAvoid unproductive schedulingBlocked on holidays/leave/closures; user notifiedUS-05Journey optimization and visualizationASM, SystemMinimize travel, visualize journeyOptimized routes, map view, circular journey supportedUS-06Mobile and offline accessASMAccess plans on the goMobile UI; offline access; sync when onlineUS-07Route planning with transport modesASMRealistic, region-specific planningPreferred transport; routes adjustedUS-08Confirmed and walk-in appointmentsASM, SystemTrack/fill/communicate appointmentsConfirmed appointments; walk-in suggestionsUS-09Reporting and analyticsRSM, RSD, SDMonitor performance/trendsReports on planned/actual calls, reschedules, pipeline mixUS-10Plan visibility and filteringASM, RSM, RSD, SDOversight and team managementCorrect visibility and filter by ASM; permissions enforcedUS-11Integration with Outlook/navigation appsASM, SystemSeamless user experienceCalendar sync; click-to-navigate; no missed appointments
+6. Design Inventory Table
+FeatureUser StoryComponents to Generate or ExtendType of ComponentDescriptionCustomer Tiering & SchedulingUS-01, US-04Tiering Entity, Power Automate, PluginEntity, Power Automate, PluginAuto-assign tier, auto-schedule callsManual Call ManagementUS-02Call Entity, Form, JS, Power AutomateEntity, Form, JS, Power AutomateAdd/amend, validations, trigger notificationsJourney Plan & CalendarUS-03, US-05Journey Plan Entity, Calendar ViewEntity, View, PluginHolds plan, enables scheduling, map integrationRoute Optimization/MapUS-05, US-07Plugin, Integration, Map ControlPlugin, Integration, PCFOptimizes call order, travel route, shows mapMobile/Offline AccessUS-06Mobile Profiles, Offline CacheMobile, ConfigAccess data without connectivityAppointment Confirmation & Walk-insUS-08Power Automate, Notification, SuggestionPower Automate, JS/PluginConfirms, reschedules, suggests walk-insReporting & AnalyticsUS-09Reports, Dashboards, Power BIDashboard, Power BITracks KPIs, call volumes, reschedule trendsSecurity & AuditAllSecurity Roles, Audit LogsSecurity, AuditField/record-level security and auditingIntegrationUS-11Outlook Sync, Navigation LinksIntegration, PluginConnects with Outlook, Google Maps, Waze, etc.
+7. Power Automate Details Table (User Story-wise)
+User StoryFlow Name/Trigger DescriptionStepsUS-01On Tiering Update (Dataverse trigger: Tiering updated/created)1. Check tier level.
+2. Calculate next call schedule.
+3. Create call activities.
+4. Notify ASMUS-02On Manual Call Create/Update (Dataverse trigger: Call created/updated)1. Validate daily volume & hours.
+2. Update related journey plan.
+3. Notify ASM if blockedUS-03On Call Save (Dataverse trigger: Call saved)1. Count calls for ASM/day.
+2. Block/save based on rule.
+3. Warn/notify if out of boundsUS-04On Calendar/Availability Change (Outlook/Dataverse trigger)1. Check call appointments.
+2. Cancel/move conflicting calls.
+3. Notify ASMUS-08On Appointment Cancelled (Dataverse trigger: Call status set to cancelled)1. Query nearby prospects.
+2. Suggest walk-ins.
+3. Notify ASMUS-09Scheduled Reporting (Scheduled/Recurrence trigger)1. Aggregate journey/call data.
+2. Generate report.
+3. Email to managementUS-10On Plan Visibility Change (Dataverse trigger: Plan updated)1. Check permissions.
+2. Update filtered viewsUS-11On Call Created/Updated (Dataverse/Outlook trigger)1. Sync with Outlook.
+2. Generate navigation link.
+3. Notify ASM
+8. Integration Points
+Integration AreaSourceTargetData/ProcessMethodCRM PlatformLegacyDynamics 365 CECustomer, Tier, CallsData Import, APICalendarD365 CEOutlook/ExchangeCall/Appointment DataOOB Sync, PluginNavigationD365 CEGoogle/WazeRoute/LocationDeep Link/URLHolidays/Opening HoursExternalD365 CEHoliday/Opening DataData Import/APIReporting/BID365 CEPower BIJourney, Call DataDataflow, Export
+9. Reporting
+* Actual vs. planned calls per ASM/team (by week, month)
+* Reason code analysis for reschedules
+* Prospect vs. account call ratio
+* Call duration/type analysis
+* Journey efficiency (travel vs. call time)
+* Plan compliance (calls as per tiering)
+* Open/overdue calls
+
+10. Security
+* Role-based access control (RBAC) for all entities and functions
+* Field-level security for sensitive data
+* Audit trail for all changes to calls, plans, and tiering
+* Data encryption in transit and at rest
+* Single sign-on with MFA (where possible)
+* Security reviews and penetration testing
+
+11. Non-Functional Requirements Table and Assumptions
+Non-Functional RequirementTarget/StandardAssumptionsPerformancePlan generation ? 10sSystem sized for expected data volumeUsabilityIntuitive, minimal-click UIUsers receive training, UAT feedback addressedReliability99.5% uptimeCRM infrastructure monitoredScalability2x user/data growthAzure/D365 capacity planningSecurityRBAC, encryption, audit logsCompliance with org security policiesAuditabilityAll changes loggedAudit reporting reviewed regularlyMobile CompatibilityResponsive/mobile-firstSupported devices defined, testedLocalizationSupports region-specific needsLanguage/holiday data availableOffline CapabilityKey data cached, auto-syncOffline scenarios tested in UAT
+12. Glossary
+* ASM: Account Sales Manager
+* RSM: Regional Sales Manager
+* RSD: Regional Sales Director
+* SD: Sales Director
+* JP: Journey Plan
+* Walk-in: Unscheduled/ad-hoc customer/prospect visit
+
+13. Assumptions & Inferred Requirements
+* All customers and prospects have sufficient profile data for scheduling
+* Users will receive training for new features
+* Mobile solution compatible with supported platforms
+* Timely notifications of schedule changes
+* Integrations comply with data protection standards
+* Regular backups and disaster recovery in place
+* System supports region-specific holidays, transport options, and localization
+
+14. Out-of-the-Box Module Fit Table
+User StoryBest fit module (OOB)Percentage of fitnessNot Fit to any moduleAuto-generate calls based on tieringSales (Customer Engagement)75%NoManually schedule/amend callsSales (Customer Engagement)90%NoOptimise and visualise journeyField Service85%NoBlend of prospect and account callsSales (Customer Engagement)80%No4-week and weekly plan visibilityField Service (Schedule Board)80%NoReschedule call with reasonField Service85%NoSuggest walk-ins for cancellationsNone (Custom required)0%YesSync plan with Outlook and navigation appsSales (Outlook), Field Service (for nav)90%NoOffline access to journey plansField Service Mobile95%NoManagement reporting on calls and reschedulesSales (Reports & Dashboards)85%NoSecure, auditable access and changesSales or Field Service (Security Model)100%NoCalendar and holiday integrationSales (Outlook), Field Service (Schedule Bd)80%No
