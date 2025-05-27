@@ -40,7 +40,7 @@ CRM3.2		Rescheduled reason code	Users to fill in if resheduled to a different da
 CRM3.3		Ability to suggest additional walk-ins for the day from the cancellation	Suggest from prospect lists nearby walk-ins to fill up for the cancelled appointment
 CRM4	Set next call date		
 CRM4.1		System creates next call - Based on Tiering	System to automatically create the next sales call date based on tiering
-CRM4.2		Manually created next call	The account manager will need to be able to add in the next call date for Prospect customer sales calls and will also be able to amend existing customer scheduled calls based on customer availability
+CRM4.2		Manually created next call	The account manager will need to be able to add in the next call date for Prospect customer sales calls and will also be able to amend existing customer scheduled calls based on customer availability. Next call date field will store the next call date based on tiering. 
 CRM5	Management Reporting		
 CRM5.1		Track actual calls - by indiviudal & team	Need to measure average calls per day by account manager over a nominated time period
 			- Last week
@@ -51,11 +51,12 @@ CRM5.2		Track planned calls - by individual & team	Need to measure average plann
 CRM5.3		Reason code report for re-scheduled calls	The number of re-scheduled calls by day by account manager with reason code over the nominated time period
 			- Last week
 			- Last month
+There are no KPIs for reporting.
 CRM6	Integration		
 CRM6.1		Integration with CRM	Need to integrate with Dynamics CRM platform
-CRM6.2		Integration with Outlook	Need to integrate with Outlook for calendar sync
+CRM6.2		Integration with Outlook	Need to integrate with Outlook for calendar sync.Only calendar need to sync.
 CRM6.3		Integration with native mobile navigation app	"Need to integrate with mobile navigaition app such as Google Maps, Bing Maps or Waze"
 CRM7	Mobile Capability		
 CRM7.1		Mobile Access	Need to ensure ASMs are able to access their journey plans and relevant information on their mobile devices
 CRM8	Offline Capability		
-CRM8.1		Offline Access	"Offline functionality is required for ASMs in the event of intermittent or no internet access due to travelling to more remote locations. ASMs must be able to access journey plans, any specific customer data and other essential information required for a visit with customers without an internet connection"
+CRM8.1		Offline Access	"Offline functionality is required for ASMs in the event of intermittent or no internet access due to travelling to more remote locations. ASMs must be able to access journey plans, any specific customer data and other essential information required for a visit with customers without an internet connection".Maximum offline periods is 12hr.
