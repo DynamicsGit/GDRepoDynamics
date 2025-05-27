@@ -1,13 +1,13 @@
 ID 	Requirement Category	Title	Description
 CRM1	Sales Call Created		
-CRM1.1		System created call - Based on Tiering	"Each 'Existing' customer (ie. A live trading customer) will be 'Tiered' based on a combination of factors (Current sales, volume & margin plus potential additional sales)"
+CRM1.1		System created Phone call - Based on Tiering	"Each 'Existing' customer (ie. A live trading customer) will be 'Tiered' based on a combination of factors (Current sales, volume & margin plus potential additional sales)"
 			
 			"In turn each Tier will be allocated a sales call schedule (Not yet confirmed but proposal is Tiers 1-4, with Tier 1 requiring a bi-weekly call, Tier 2 = monthly, Tier 3 = bi-monthly & Tier 4 = 3 monthly)"
 			
 			Consider last meeting date for creating the plan.
 			
 			This tiering will then drive a system created plan for the account manager to follow. Assigned to connected ASM.
-CRM1.2		Manually created call	The account manager will need to be able to manually add in Prospect customer(Lead) sales calls and will also be able to amend existing customer scheduled calls (activity(Phone call /appointment)based on customer availability
+CRM1.2		Manually created call	The account manager will need to be able to manually add in Prospect customer(Lead) sales phone calls and will also be able to amend existing customer scheduled calls (activity(Phone call /appointment)based on customer availability
 CRM1.3		Capability to schedule 7 calls per day	Sales team are tasked with minimum 7 calls and maximum 9 per day(Phone call activity to be created)
 CRM1.4		"Considering bank holiday, opening hours, planned holidays, meeting hours for journey planning"	"Review the outlook calendar, opening hours in the accounts section for planning (Scheduling)"
 CRM1.5		"Definition of home locations, start and end locations"	This is for start and end of the journeys.
