@@ -1,0 +1,7 @@
+Name	CTC	Company
+Suresh D	4000	Accenture
+Mainak D	5000	Accenture
+Ram K	4000	TCS
+Amey K	5000	TCS
+Gopal S	4000	TCS
+Venkat D	5000	TCS
